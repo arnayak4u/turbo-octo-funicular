@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import './App.css';
 import { ToggleButton } from './ui-components/toggle-button/toggle-button';
 import styles from './App.module.scss';
+import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {toggleAction} from "./actions/deliveryPossibility";
+import {outcomeAction} from "./actions/outcomes";
 const { header, confirmBtn, outcomeControlContainer, app } = styles;
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    /* this.state = {
       runCounter: {
         items: [{ id: 'DotBall', text: 'Dot Ball' },
         { id: 'SixRuns', text: '6 Runs' }, { id: 'FourRuns', text: '4 Runs' },
@@ -25,49 +29,50 @@ class App extends Component {
         { id: 'Wide', text: 'Wide' }, { id: 'DeadBall', text: 'Dead Ball' },
         { id: 'Byes', text: 'Byes' }], active: true
       }
-    }
+    } */
   }
   handleConfirmClick = (event) => {
     //
   }
   handleToggleClick = (e) => {
+    const {toggleAction} = this.props;
     e.stopPropagation();
-    const controlId = e.target.parentElement.id;
-    const items = this.state[controlId].items;
-    const clickedItem = items[e.target.getAttribute('index')];
+    const changedDeliveryCategory = e.target.parentElement.id;
+    const changedControlIndex = e.target.getAttribute('index');
+    toggleAction(changedDeliveryCategory,changedControlIndex);
+
+    /* const items = this.state[changedDeliveryCategory].items;
+    const clickedItem = items[changedControlIndex];
     let activeItem = { ...clickedItem, active: !clickedItem.active };
     let newItems = items.map(itm => ({ ...itm, active: false }));
-    newItems.splice(e.target.getAttribute('index'), 1, activeItem);
-
-    let newState ={...this.state,
-      [controlId]:{items: [...newItems], active: this.state[controlId].active }
-      };
+    newItems.splice(changedControlIndex, 1, activeItem);
 
     this.setState((prevState) => {
       let newState = { ...prevState };
-      newState[controlId] = { items: [...newItems], active: true };
+      newState[changedDeliveryCategory] = { items: [...newItems], active: true };
       return newState;
-    });
+    }); */
   }
   render() {
+    const {currentDelivery} = this.props;
     return (
       <div className={app}>
         <div className={outcomeControlContainer}>
           <h4>Delivery Outcome</h4>
           <div className={header}>
             <h5> Score :</h5>
-            <ToggleButton id='runCounter' items={this.state.runCounter.items}
-             handleClick={this.handleToggleClick} active = {this.state.runCounter.active} />
+            <ToggleButton id='runCounter' items={currentDelivery.runCounter.items}
+             handleClick={this.handleToggleClick} active = {currentDelivery.runCounter.active} />
           </div>
           <div className={header}>
             <h5> Howz That :</h5>
-            <ToggleButton id='wicketCounter' items={this.state.wicketCounter.items} 
-            handleClick={this.handleToggleClick} active={this.state.wicketCounter.active} />
+            <ToggleButton id='wicketCounter' items={currentDelivery.wicketCounter.items} 
+            handleClick={this.handleToggleClick} active={currentDelivery.wicketCounter.active} />
           </div>
           <div className={header}>
             <h5> Faulty Deliveries :</h5>
-            <ToggleButton id='faultyDeliveries' items={this.state.faultyDeliveries.items} 
-            handleClick={this.handleToggleClick} active={this.state.faultyDeliveries.active}  />
+            <ToggleButton id='faultyDeliveries' items={currentDelivery.faultyDeliveries.items} 
+            handleClick={this.handleToggleClick} active={currentDelivery.faultyDeliveries.active}  />
           </div>
         </div>
         <div className={confirmBtn} onClick={this.handleConfirmClick}>
@@ -78,4 +83,13 @@ class App extends Component {
   }
 }
 
-export default App;
+//export default App;
+function mapStateToProps(state) {
+  return { currentDelivery: state.currentDelivery }
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ toggleAction, outcomeAction }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
