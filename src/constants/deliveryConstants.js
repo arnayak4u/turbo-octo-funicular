@@ -13,6 +13,14 @@ export const outcomeIdConstants = {
             ThreeRuns:'ThreeRuns',
             TwoRuns:'TwoRuns',
             OneRun:'OneRun'
+        },
+        primaryText:{
+            DotBall:'0',
+            SixRuns:'6',
+            FourRuns:'4',
+            ThreeRuns:'3',
+            TwoRuns:'2',
+            OneRun:'1'
         }
     },
     [outcomeCategoryConstants.wicketCounter]:{

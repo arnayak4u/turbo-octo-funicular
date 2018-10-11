@@ -3,58 +3,27 @@ import './App.css';
 import { ToggleButton } from './ui-components/toggle-button/toggle-button';
 import styles from './App.module.scss';
 import { bindActionCreators } from 'redux';
-import {connect} from 'react-redux';
-import {toggleAction} from "./actions/deliveryPossibility";
-import {outcomeAction} from "./actions/outcomes";
-const { header, confirmBtn, outcomeControlContainer, app } = styles;
+import { connect } from 'react-redux';
+import { toggleAction } from "./actions/deliveryPossibility";
+import { outcomeAction } from "./actions/outcomes";
+import { generateDeliveryOutcome, generateOutcomeDisplayText } from "./helpers/outcome-decision-helper";
+import {DeliveryHistory } from "./ui-components/delivery-history";
+const { header, confirmBtn, outcomeControlContainer, app, deliveryHistory } = styles;
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    /* this.state = {
-      runCounter: {
-        items: [{ id: 'DotBall', text: 'Dot Ball' },
-        { id: 'SixRuns', text: '6 Runs' }, { id: 'FourRuns', text: '4 Runs' },
-        { id: 'ThreeRuns', text: '3 Runs' },
-        { id: 'TwoRuns', text: '2 Runs' }, { id: 'OneRun', text: '1 Run' }], active: true
-      },
-      wicketCounter: {
-        items: [{ id: 'HitWicket', text: 'Hit Wicket' },
-        { id: 'Bowled', text: 'Bowled' }, { id: 'Stumped', text: 'Stumped' },
-        { id: 'RunOut', text: 'Run Out' }, { id: 'Caught', text: 'Caught' },
-        { id: 'LBW', text: 'LBW' }, { id: 'CaughtNBowled', text: 'Caught N Bowled' }], active: true
-      },
-      faultyDeliveries: {
-        items: [{ id: 'NoBall', text: 'No Ball' },
-        { id: 'Wide', text: 'Wide' }, { id: 'DeadBall', text: 'Dead Ball' },
-        { id: 'Byes', text: 'Byes' }], active: true
-      }
-    } */
-  }
   handleConfirmClick = (event) => {
-    //
+    const { currentDelivery, outcomeAction } = this.props;
+    outcomeAction(generateDeliveryOutcome(currentDelivery));
   }
   handleToggleClick = (e) => {
-    const {toggleAction} = this.props;
+    const { toggleAction } = this.props;
     e.stopPropagation();
     const changedDeliveryCategory = e.target.parentElement.id;
     const changedControlIndex = e.target.getAttribute('index');
-    toggleAction(changedDeliveryCategory,changedControlIndex);
-
-    /* const items = this.state[changedDeliveryCategory].items;
-    const clickedItem = items[changedControlIndex];
-    let activeItem = { ...clickedItem, active: !clickedItem.active };
-    let newItems = items.map(itm => ({ ...itm, active: false }));
-    newItems.splice(changedControlIndex, 1, activeItem);
-
-    this.setState((prevState) => {
-      let newState = { ...prevState };
-      newState[changedDeliveryCategory] = { items: [...newItems], active: true };
-      return newState;
-    }); */
+    toggleAction(changedDeliveryCategory, changedControlIndex);
   }
   render() {
-    const {currentDelivery} = this.props;
+    const { currentDelivery, outcomes } = this.props;
     return (
       <div className={app}>
         <div className={outcomeControlContainer}>
@@ -62,21 +31,24 @@ class App extends Component {
           <div className={header}>
             <h5> Score :</h5>
             <ToggleButton id='runCounter' items={currentDelivery.runCounter.items}
-             handleClick={this.handleToggleClick} active = {currentDelivery.runCounter.active} />
+              handleClick={this.handleToggleClick} active={currentDelivery.runCounter.active} />
           </div>
           <div className={header}>
             <h5> Howz That :</h5>
-            <ToggleButton id='wicketCounter' items={currentDelivery.wicketCounter.items} 
-            handleClick={this.handleToggleClick} active={currentDelivery.wicketCounter.active} />
+            <ToggleButton id='wicketCounter' items={currentDelivery.wicketCounter.items}
+              handleClick={this.handleToggleClick} active={currentDelivery.wicketCounter.active} />
           </div>
           <div className={header}>
             <h5> Faulty Deliveries :</h5>
-            <ToggleButton id='faultyDeliveries' items={currentDelivery.faultyDeliveries.items} 
-            handleClick={this.handleToggleClick} active={currentDelivery.faultyDeliveries.active}  />
+            <ToggleButton id='faultyDeliveries' items={currentDelivery.faultyDeliveries.items}
+              handleClick={this.handleToggleClick} active={currentDelivery.faultyDeliveries.active} />
           </div>
         </div>
         <div className={confirmBtn} onClick={this.handleConfirmClick}>
           {'Confirm'}
+        </div>
+        <div className={deliveryHistory}>
+          <DeliveryHistory outcomes={outcomes}/>
         </div>
       </div>
     );
@@ -85,7 +57,7 @@ class App extends Component {
 
 //export default App;
 function mapStateToProps(state) {
-  return { currentDelivery: state.currentDelivery }
+  return { currentDelivery: state.currentDelivery,outcomes:state.outcomes.map(generateOutcomeDisplayText) }
 }
 
 function mapDispatchToProps(dispatch) {

@@ -1,23 +1,25 @@
 import {outcomeCategoryConstants, outcomeIdConstants} from "../constants/deliveryConstants";
-const {[outcomeCategoryConstants.wicketCounter]:{id:wcConst}} = outcomeIdConstants;
+const {[outcomeCategoryConstants.wicketCounter]:{id:wcConst},
+[outcomeCategoryConstants.faultyDeliveries]:{id:fdConst},
+[outcomeCategoryConstants.runCounter]:{id:rcConst}} = outcomeIdConstants;
 
 const currentDeliveryInitialState = {
     [outcomeCategoryConstants.runCounter]: {
-        items: [{ id: wcConst.DotBall, text: 'Dot Ball' },
-        { id: 'SixRuns', text: '6 Runs' }, { id: 'FourRuns', text: '4 Runs' },
-        { id: 'ThreeRuns', text: '3 Runs' },
-        { id: 'TwoRuns', text: '2 Runs' }, { id: 'OneRun', text: '1 Run' }], active: true
+        items: [{ id: rcConst.DotBall, text: 'Dot Ball' },
+        { id: rcConst.SixRuns, text: '6 Runs' }, { id: rcConst.FourRuns, text: '4 Runs' },
+        { id: rcConst.ThreeRuns, text: '3 Runs' },
+        { id: rcConst.TwoRuns, text: '2 Runs' }, { id: rcConst.OneRun, text: '1 Run' }], active: true
     },
     [outcomeCategoryConstants.wicketCounter]: {
-        items: [{ id: 'HitWicket', text: 'Hit Wicket' },
-        { id: 'Bowled', text: 'Bowled' }, { id: 'Stumped', text: 'Stumped' },
-        { id: 'RunOut', text: 'Run Out' }, { id: 'Caught', text: 'Caught' },
-        { id: 'LBW', text: 'LBW' }, { id: 'CaughtNBowled', text: 'Caught N Bowled' }], active: true
+        items: [{ id: wcConst.HitWicket, text: 'Hit Wicket' },
+        { id: wcConst.Bowled, text: 'Bowled' }, { id: wcConst.Stumped, text: 'Stumped' },
+        { id: wcConst.RunOut, text: 'Run Out' }, { id: wcConst.Caught, text: 'Caught' },
+        { id: wcConst.LBW, text: 'LBW' }, { id: wcConst.CaughtNBowled, text: 'Caught N Bowled' }], active: true
     },
     [outcomeCategoryConstants.faultyDeliveries]: {
-        items: [{ id: 'NoBall', text: 'No Ball' },
-        { id: 'Wide', text: 'Wide' }, { id: 'DeadBall', text: 'Dead Ball' },
-        { id: 'Byes', text: 'Byes' }], active: true
+        items: [{ id: fdConst.NoBall, text: 'No Ball' },
+        { id: fdConst.Wide, text: 'Wide' }, { id: fdConst.DeadBall, text: 'Dead Ball' },
+        { id: fdConst.Byes, text: 'Byes' }], active: true
     }
 }
 
@@ -34,7 +36,8 @@ export default function currentDelivery(state = currentDeliveryInitialState, act
             let newState = { ...state };
             newState[changedDeliveryCategory] = { items: [...newItems], active: true };
             return newState;
-
+        case 'NEXT_DELIVERY':
+            return currentDeliveryInitialState;
         default:
             return state
     }
