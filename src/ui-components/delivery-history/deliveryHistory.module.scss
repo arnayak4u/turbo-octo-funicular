@@ -1,13 +1,22 @@
 .item{
+    margin-right: 5px;
+    overflow: hidden;
+    width: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;    
     .primaryText{
         border-radius: 50%;
         border:1px black solid;
         font-weight: bold;
         font-size: 16px;
-        width:50px;
+        width:25px;
         height:25px;
     }
     .secondaryText{
         font-size: 12px;
+        text-align: center;
+        overflow: hidden;
     }
 }
